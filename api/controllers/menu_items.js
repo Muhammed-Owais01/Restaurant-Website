@@ -34,7 +34,7 @@ exports.menu_get_all_items = (req, res, next) => {
 };
 
 exports.menu_get_item = (req, res, next) => {
-    const id = req.params.itemImage;
+    const id = req.params.menuItemId;
     MenuItem.findById(id)
         .select('_id name price itemImage')
         .exec()
@@ -65,14 +65,35 @@ exports.menu_post_item = (req, res, next) => {
         console.log("Sucessfully Created");
         res.status(200).json({
             message: "Item Created Successfully",
-            item: menu_item._id
+            id: menu_item._id
+        });
+    })
+    .catch(err => handleError(err, res));
+}
+
+exports.menu_update_items = (req, res, next) => {
+    const updateOps = {};
+    for (const ops of req.body)
+    {
+        [ops.propName] = ops.value;
+    }
+    MenuItem.updateOne({_id: req.params.menuItemId}, { $set: updateOps })
+    .exec()
+    .then(result => {
+        console.log(result);
+        res.status(200).json({
+            message: "Updated Successfully",
+            updatedObject: {
+                name: req.body.name,
+                price: req.body.price
+            }
         });
     })
     .catch(err => handleError(err, res));
 }
 
 exports.menu_delete_item = (req, res, next) => {
-    MenuItem.deleteOne({_id: req.body.id})
+    MenuItem.deleteOne({_id: req.params.menuItemId})
     .exec()
     .then(item => {
         res.status(200).json({
