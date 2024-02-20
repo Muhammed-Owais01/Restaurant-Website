@@ -36,7 +36,7 @@ exports.menu_get_all_items = (req, res, next) => {
 exports.menu_get_item = (req, res, next) => {
     const id = req.params.itemImage;
     MenuItem.findById(id)
-        .select()
+        .select('_id name price itemImage')
         .exec()
         .then(doc => {
             console.log("From database", doc);
@@ -53,3 +53,31 @@ exports.menu_get_item = (req, res, next) => {
         .catch(err => handleError(err, res));
 }
 
+exports.menu_post_item = (req, res, next) => {
+    const menu_item = new MenuItem({
+        _id: new mongoose.Types.ObjectId(),
+        name: req.body.name,
+        price: req.body.price,
+        itemImage: req.file.path
+    });
+    menu_item.save()
+    .then(result => {
+        console.log("Sucessfully Created");
+        res.status(200).json({
+            message: "Item Created Successfully",
+            item: menu_item._id
+        });
+    })
+    .catch(err => handleError(err, res));
+}
+
+exports.menu_delete_item = (req, res, next) => {
+    MenuItem.deleteOne({_id: req.body.id})
+    .exec()
+    .then(item => {
+        res.status(200).json({
+            message: "Item deleted"
+        })
+    })
+    .catch(err => handleError(err, res));
+}
