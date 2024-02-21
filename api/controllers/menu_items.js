@@ -73,11 +73,14 @@ exports.menu_post_item = (req, res, next) => {
 
 exports.menu_update_items = (req, res, next) => {
     const updateOps = {};
-    for (const ops of req.body)
-    {
-        [ops.propName] = ops.value;
-    }
-    MenuItem.updateOne({_id: req.params.menuItemId}, { $set: updateOps })
+
+    // console.log(req.body);
+    // for (const ops of req.body) {
+    //     console.log(ops);
+    //     updateOps[ops] = req.body[ops];
+    // }
+
+    MenuItem.updateOne({_id: req.params.menuItemId}, { $set: req.body })
     .exec()
     .then(result => {
         console.log(result);
