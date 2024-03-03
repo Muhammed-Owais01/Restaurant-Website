@@ -74,4 +74,16 @@ exports.delete_user = (req, res, next)=> {
         res.status(200).json({ message: "User Deleted" });
     })
     .catch(err => res.status(500).json({error: err}));
-}
+};
+
+exports.display_cart = (req, res, next) => {
+    User.findById(req.userData.userId)
+    .populate('cart')
+    .exec()
+    .then(userFound => {
+        res.status(200).json({
+            cart: userFound.cart
+        });
+    })
+    .catch(err => {console.log(err); res.status(500).json({error: err})});
+};

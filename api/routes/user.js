@@ -10,4 +10,6 @@ router.post('/login', UserController.user_login);
 
 router.delete('/:userId', checkAuth, UserController.delete_user);
 
+router.get('/cart', checkAuth, UserController.display_cart);
+
 module.exports = router;

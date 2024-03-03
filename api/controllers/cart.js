@@ -15,7 +15,7 @@ module.exports.addItem = (req, res, next) => {
         - FInd user by id
         - delete item
     */
-
+    
     MenuItem.findById(req.params.itemId)
     .exec()
     .then(menuItem => {
