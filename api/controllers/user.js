@@ -72,9 +72,10 @@ exports.user_login = (req, res, next) => {
                         userId: users[0]._id
                     },
                     process.env.JWT_KEY,
-                    {
-                        expiresIn: "4h"
-                    });
+                    // {
+                    //     expiresIn: "4h"
+                    // }
+                    );
                     res.status(200).json({
                         message: "User logged in",
                         token: `Bearer ${token}`
