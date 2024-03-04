@@ -4,18 +4,6 @@ const User = require('../models/user');
 const MenuItem = require('../models/menu_item');
 
 module.exports.addItem = (req, res, next) => {
-    /* TODO:
-        Add
-        - Check item exists
-        - Find user by id
-        - push item in cart
-
-        Delete
-        - Check item exists
-        - FInd user by id
-        - delete item
-    */
-    
     MenuItem.findById(req.params.itemId)
     .exec()
     .then(menuItem => {
@@ -28,11 +16,28 @@ module.exports.addItem = (req, res, next) => {
         })
         .catch(err => {
             console.log(err);
-            res.status(500).json({message: "TEST"})
+            res.status(500).json({ Error: err })
         });
     })
     .catch(err => {
         console.log(err);
-        res.status(500).json({message: "TEST2"});
+        res.status(500).json({ Error: err });
     });
+};
+
+exports.deleteItem = (req, res, next) => {
+    User.findByIdAndUpdate(req.userData.userId)
+    .exec()
+    .then(updateUser =>{
+        if (!updateUser) return res.status(404).json({ message: "User Not Found" });
+        const itemIndex = updateUser.cart.findIndex(item => String(item._id) === req.params.itemId);
+        if (itemIndex === -1) return res.status(404).json({ message: "Item not found in cart"});
+        updateUser.cart.splice(itemIndex, 1);
+        updateUser.save()
+        .then(savedUser => {
+            res.status(200).json({ message: "Item removed from cart"});
+        })
+        .catch(err => {console.log(err); res.status(500).json({ error: err })});
+    })
+    .catch(err => { console.log(err); res.status(500).json({error: err})});
 };
